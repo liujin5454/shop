@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+//付款
+Route::get('payment/order/alipay', 'Api\v1\PayController@payByAlipay')->name('payment.alipay');
 //支付回调
 Route::post('payment/alipay/notify', 'Api\v1\PayController@alipayNotify')->name('payment.alipay.notify');
 //查询物流
@@ -67,8 +69,7 @@ Route::group([
     Route::post('edit_address','Api\v1\AddressController@editAddress');
     //下单
     Route::post('add_order','Api\v1\OrdersController@addOrder');
-    //付款
-    Route::get('payment/order/alipay', 'Api\v1\PayController@payByAlipay')->name('payment.alipay');
+
     //查看订单
     Route::get('get_order','Api\v1\OrdersController@getOrder');
     //展示订单详情
