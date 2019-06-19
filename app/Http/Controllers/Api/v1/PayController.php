@@ -13,7 +13,8 @@ class PayController extends Controller
     public function payByAlipay(Request $request)
     {
         // 当前用户支付订单
-        $order = Orders::where('id',$request->order_id)->where('user_id',auth()->user()->id)->first();
+        //$order = Orders::where('id',$request->order_id)->where('user_id',auth()->user()->id)->first();
+        $order = Orders::where('id',$request->order_id)->first();
         // 订单已支付或者已关闭
         if ($order->paid_at || $order->closed) {
             throw new InvalidRequestException('订单状态不正确');
