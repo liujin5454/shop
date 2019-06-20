@@ -120,7 +120,7 @@ class PayController extends Controller
         $order->update([
             //'paid_at'        => Carbon::now(), // 支付时间
             //'payment_no'     => $data->trade_no, // 支付宝订单号
-            payment_no     => 'qweqweqwe'
+            'payment_no'     => 'qweqweqwe'
         ]);
 
         //return $pay->success();
