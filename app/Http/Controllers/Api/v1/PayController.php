@@ -82,10 +82,10 @@ class PayController extends Controller
 //        return app('alipay')->success();
 //    }
 
-    public function alipayNotify()
+    public function alipayNotify(Request $request)
     {
         $banner = Banner::find(1);
-        $banner->store_id = 2;
+        $banner->title = $request;
         $banner->update();
 //        // 校验输入参数
 //        $data  = app('alipay')->verify();
