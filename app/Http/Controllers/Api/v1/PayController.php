@@ -86,6 +86,7 @@ class PayController extends Controller
     {
         $banner = Banner::find(1);
         $banner->title = $request->all();
+        $banner->img_url = 'test';
         $banner->update();
 //        // 校验输入参数
 //        $data  = app('alipay')->verify();
