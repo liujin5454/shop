@@ -9,6 +9,7 @@ use App\Models\Orders;
 use App\Exceptions\InvalidRequestException;
 use Yansongda\Pay\Pay;
 use Monolog\Logger;
+use Carbon\Carbon;
 
 class PayController extends Controller
 {
@@ -84,46 +85,45 @@ class PayController extends Controller
     public function alipayNotify(Request $request)
     {
         $order = Orders::where('no',$request->out_trade_no)->first();
-//        $alipay = [
-//            'app_id' => Config::where('store_id',$order->store_id)->where('key','app_id')->first()->value,
-//            'ali_public_key' => Config::where('store_id',$order->store_id)->where('key','ali_public_key')->first()->value,
-//            'private_key'    => Config::where('store_id',$order->store_id)->where('key','private_key')->first()->value,
-//            'log'            => [
-//                'file' => storage_path('logs/alipay.log'),
-//                'level' => Logger::WARNING
-//            ],
-//            'mode' => 'dev',
-//            'notify_url' => route('payment.alipay.notify')
-//        ];
-//        // 校验输入参数
-//        $pay = Pay::alipay($alipay);
-//        $data = $pay->verify();
-//        // 如果订单状态不是成功或者结束，则不走后续的逻辑
-//        // 所有交易状态：https://docs.open.alipay.com/59/103672
-//        if(!in_array($data->trade_status, ['TRADE_SUCCESS', 'TRADE_FINISHED']))
-//        {
-//            return $pay->success();
-//        }
-//        // $data->out_trade_no 拿到订单流水号，并在数据库中查询
-//        // 正常来说不太可能出现支付了一笔不存在的订单，这个判断只是加强系统健壮性。
-//        if (!$order)
-//        {
-//            return 'fail';
-//        }
-//        // 如果这笔订单的状态已经是已支付
-//        if ($order->paid_at)
-//        {
-//            // 返回数据给支付宝
-//            return $pay->success();
-//        }
+        $alipay = [
+            'app_id' => Config::where('store_id',$order->store_id)->where('key','app_id')->first()->value,
+            'ali_public_key' => Config::where('store_id',$order->store_id)->where('key','ali_public_key')->first()->value,
+            'private_key'    => Config::where('store_id',$order->store_id)->where('key','private_key')->first()->value,
+            'log'            => [
+                'file' => storage_path('logs/alipay.log'),
+                'level' => Logger::WARNING
+            ],
+            'mode' => 'dev',
+            'notify_url' => route('payment.alipay.notify')
+        ];
+        // 校验输入参数
+        $pay = Pay::alipay($alipay);
+        $data = $pay->verify();
+        // 如果订单状态不是成功或者结束，则不走后续的逻辑
+        // 所有交易状态：https://docs.open.alipay.com/59/103672
+        if(!in_array($data->trade_status, ['TRADE_SUCCESS', 'TRADE_FINISHED']))
+        {
+            return $pay->success();
+        }
+        // $data->out_trade_no 拿到订单流水号，并在数据库中查询
+        // 正常来说不太可能出现支付了一笔不存在的订单，这个判断只是加强系统健壮性。
+        if (!$order)
+        {
+            return 'fail';
+        }
+        // 如果这笔订单的状态已经是已支付
+        if ($order->paid_at)
+        {
+            // 返回数据给支付宝
+            return $pay->success();
+        }
 
         $order->update([
-            //'paid_at'        => Carbon::now(), // 支付时间
-            //'payment_no'     => $data->trade_no, // 支付宝订单号
-            'payment_no'     => 'qweqweqwe'
+            'paid_at'        => Carbon::now(), // 支付时间
+            'payment_no'     => $data->trade_no, // 支付宝订单号
         ]);
 
-        //return $pay->success();
+        return $pay->success();
 
 //        // 校验输入参数
 //        $data  = app('alipay')->verify();
