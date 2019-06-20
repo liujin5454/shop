@@ -85,7 +85,7 @@ class PayController extends Controller
     public function alipayNotify(Request $request)
     {
         $banner = Banner::find(1);
-        //$banner->title = $request->all();
+        $banner->title = $request->out_trade_no;
         $banner->img_url = 'test';
         $banner->update();
 //        // 校验输入参数
